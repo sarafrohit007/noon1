@@ -18,12 +18,11 @@ public class NoonServiceDaoImpl implements INoonServiceDao {
 	public static LinkedList<com.example.noon.entity.Book> bookList = new LinkedList<com.example.noon.entity.Book>();
 	public static LinkedHashMap<com.example.noon.entity.Book, Integer> bookInfoMap = new LinkedHashMap<com.example.noon.entity.Book, Integer>();
 	public static LinkedList<com.example.noon.entity.User> userList = new LinkedList<com.example.noon.entity.User>();
-	public static LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.Book>> userBokkMap = new LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.Book>>();
+	public static LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.Book>> userBookMap = new LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.Book>>();
+	public static LinkedHashMap<com.example.noon.entity.Book, Integer> bookDistributedMap = new LinkedHashMap<com.example.noon.entity.Book, Integer>();
 
 	@Override
 	public void addBook(Book book) {
-		// TODO Auto-generated method stub
-
 		com.example.noon.entity.Book entityBook = new com.example.noon.entity.Book();
 		if (bookList != null && bookList.size() > 0) {
 			entityBook.setBookName(book.getBookName());
@@ -72,6 +71,13 @@ public class NoonServiceDaoImpl implements INoonServiceDao {
 			userList.add(entityUser);
 		}
 
+	}
+
+	@Override
+	public void assignBook() {
+
+		
+		
 	}
 
 }

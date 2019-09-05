@@ -48,6 +48,16 @@ public class NoonController {
 		return "Inside add User result function.... analysis";
 	}
 	
+	@RequestMapping("/assignBook")
+	@ResponseBody
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String assignBook() {
+		System.out.println("Inside assigning book to the user.... function");
+		noonService.assignBook();
+		return null;
+	}
+	
+	
 	
 	
 	

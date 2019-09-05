@@ -27,4 +27,10 @@ public class NoonServiceImpl implements INoonService {
 		
 	}
 
+	@Override
+	public void assignBook() {
+		noonServiceDao.assignBook();
+		
+	}
+
 }

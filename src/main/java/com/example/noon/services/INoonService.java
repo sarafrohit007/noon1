@@ -9,4 +9,6 @@ public interface INoonService {
 
 	void addUser(User user);
 
+	void assignBook();
+
 }
