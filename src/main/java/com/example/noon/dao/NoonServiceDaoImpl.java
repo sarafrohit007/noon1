@@ -109,6 +109,11 @@ public class NoonServiceDaoImpl implements INoonServiceDao {
 			}
 		}
 		
+		if(alreadyOrderedCount>0) {
+			return; // customer has already booked more than 1 book.
+		}
+		
+		
 		
 
 	}
