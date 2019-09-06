@@ -6,6 +6,7 @@ public class Book{
 	private String bookName;
 	private String authorName;
 	private String publisher;
+	private boolean alreadyBooked = false;
 
 	public Integer getId() {
 		return id;
@@ -39,10 +40,18 @@ public class Book{
 		this.publisher = publisher;
 	}
 
+	public boolean isAlreadyBooked() {
+		return alreadyBooked;
+	}
+
+	public void setAlreadyBooked(boolean alreadyBooked) {
+		this.alreadyBooked = alreadyBooked;
+	}
+
 	@Override
 	public String toString() {
 		return "Book [id=" + id + ", bookName=" + bookName + ", authorName=" + authorName + ", publisher=" + publisher
-				+ "]";
+				+ ", alreadyBooked=" + alreadyBooked + "]";
 	}
 
 	@Override

@@ -98,7 +98,17 @@ public class NoonServiceDaoImpl implements INoonServiceDao {
 			return; // checking for user not available in the system
 		}
 
+		int alreadyOrderedCount = 0;
 		LinkedList<com.example.noon.entity.Book> bookList = userBookMap.get(user);
+		if (bookList != null && bookList.size() > 0) {
+			for(com.example.noon.entity.Book book : bookList) {
+				if(book.isAlreadyBooked()) {
+					alreadyOrderedCount++;
+					break; // Check for single/maximum book order
+				}
+			}
+		}
+		
 		
 
 	}
