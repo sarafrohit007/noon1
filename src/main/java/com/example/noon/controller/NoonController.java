@@ -55,10 +55,17 @@ public class NoonController {
 	public String assignBook(@RequestBody BookBorrowInfoDTO bookBorrowInfo) {
 		System.out.println("Inside assigning book to the user.... function");
 		noonService.assignBook(bookBorrowInfo);
-		return null;
+		return "Successfully assigned book";
 	}
 	
-	
+	@RequestMapping("/calculateTotalFine")
+	@ResponseBody
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String calculateTotalFine() {
+		System.out.println("Inside assigning book to the user.... function");
+		noonService.calculateFine();
+		return "Successfully calculated fine";
+	}
 	
 	
 	

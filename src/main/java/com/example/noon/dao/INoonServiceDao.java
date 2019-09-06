@@ -12,4 +12,6 @@ public interface INoonServiceDao {
 
 	void assignBook(BookBorrowInfoDTO bookBorrowInfo);
 
+	void calculateFine();
+
 }

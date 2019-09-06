@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,7 @@ import com.example.noon.dto.Book;
 import com.example.noon.dto.BookBorrowInfoDTO;
 import com.example.noon.dto.User;
 import com.example.noon.entity.BookIdGenerator;
+import com.example.noon.entity.FineDetailIdGenerator;
 import com.example.noon.entity.FineDetailInfo;
 import com.example.noon.entity.UserBookDetail;
 import com.example.noon.entity.UserBookDetailIdGenerator;
@@ -27,8 +29,10 @@ public class NoonServiceDaoImpl implements INoonServiceDao {
 	public static LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.UserBookDetail>> userBookMap = new LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.UserBookDetail>>(); // map of books issued to customer
 	public static LinkedHashMap<com.example.noon.entity.Book, Integer> bookDistributedCountMap = new LinkedHashMap<com.example.noon.entity.Book, Integer>(); // boos distributed count map. suppose a - book whose 2 copies are distributed
 	public static LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.FineDetailInfo>> userFineDetails = new LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.FineDetailInfo>>(); // fine datil map of user.
+	public static LinkedList<FineDetailInfo> allFineDetails = new LinkedList<FineDetailInfo>();
 	
 	public static final Integer maxFineLimitToBlockUser = 100;
+	public static final Integer PER_LATE_DAY_FINE  = 10;
 
 	@Override
 	public void addBook(Book book) {
@@ -187,6 +191,55 @@ public class NoonServiceDaoImpl implements INoonServiceDao {
 		} else {
 			bookDistributedCountMap.put(entityBook, bookDistributedCountMap.get(entityBook) + 1);
 		}
+	}
+
+	@Override
+	public void calculateFine() {
+		
+
+		List<UserBookDetail> userBookList = NoonServiceDaoImpl.allUserBookDetails;
+		LinkedHashMap<com.example.noon.entity.User, LinkedList<FineDetailInfo>> userFinedetailsMap = NoonServiceDaoImpl.userFineDetails;
+		if (userBookList != null && userBookList.size() > 0) {
+			for (UserBookDetail userBookDetail : userBookList) {
+				Date tentativeReturnDate = userBookDetail.getTentativeReturnDate();
+				Date currentDate = new Date();
+				if (currentDate.compareTo(tentativeReturnDate) > 0) {
+					LinkedList<FineDetailInfo> userFineList = userFinedetailsMap.get(userBookDetail.getUser());
+					if (userFineList == null) {
+						FineDetailInfo fineDetail = new FineDetailInfo();
+						LinkedList<FineDetailInfo> fineDetails = NoonServiceDaoImpl.allFineDetails;
+						if (fineDetails != null && fineDetails.size() > 0) {
+							Collections.sort(NoonServiceDaoImpl.allFineDetails, new FineDetailIdGenerator());
+							int maxId = NoonServiceDaoImpl.allFineDetails
+									.get(NoonServiceDaoImpl.allFineDetails.size() - 1).getId();
+							fineDetail.setId(maxId+1);
+							fineDetail.setBook(userBookDetail.getBook());
+							fineDetail.setAmount(PER_LATE_DAY_FINE);
+							fineDetail.setUser(userBookDetail.getUser());
+							fineDetail.setPaid(false);
+							NoonServiceDaoImpl.allFineDetails.add(fineDetail);
+						} else {
+							fineDetail.setId(1);
+							fineDetail.setBook(userBookDetail.getBook());
+							fineDetail.setAmount(PER_LATE_DAY_FINE);
+							fineDetail.setUser(userBookDetail.getUser());
+							fineDetail.setPaid(false);
+							NoonServiceDaoImpl.allFineDetails.add(fineDetail);
+						}
+						NoonServiceDaoImpl.userFineDetails.put(userBookDetail.getUser(), NoonServiceDaoImpl.allFineDetails);
+					} else {
+						for (FineDetailInfo fineDetail : userFineList) {
+							if (fineDetail.getUser().equals(userBookDetail.getUser())
+									&& fineDetail.getBook().equals(userBookDetail.getBook())) {
+								fineDetail.setAmount(fineDetail.getAmount()+PER_LATE_DAY_FINE);
+							}
+						}
+					}
+				}
+			}
+		}
+	
+		
 	}
 
 }

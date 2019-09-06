@@ -34,4 +34,9 @@ public class NoonServiceImpl implements INoonService {
 		
 	}
 
+	@Override
+	public void calculateFine() {
+		noonServiceDao.calculateFine();
+	}
+
 }
