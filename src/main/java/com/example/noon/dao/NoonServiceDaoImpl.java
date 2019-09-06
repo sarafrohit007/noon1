@@ -151,8 +151,6 @@ public class NoonServiceDaoImpl implements INoonServiceDao {
 		Date issueDate = cal.getTime();
 		cal.add(Calendar.DAY_OF_YEAR, 7);
 		Date returnDate = cal.getTime();
-		entityBook.setIssueDate(issueDate);
-		entityBook.setReturnDate(returnDate);
 		bookList.add(entityBook);
 		userBookMap.put(user,bookList); // putting books list booked by user  
 

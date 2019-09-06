@@ -4,6 +4,7 @@ public class FineDetailInfo {
 
 	private Integer id;
 	private User user;
+	private Book  book;
 	private double amount;
 	private boolean paid = false;
 
@@ -37,6 +38,14 @@ public class FineDetailInfo {
 
 	public void setPaid(boolean paid) {
 		this.paid = paid;
+	}
+
+	public Book getBook() {
+		return book;
+	}
+
+	public void setBook(Book book) {
+		this.book = book;
 	}
 
 	@Override
