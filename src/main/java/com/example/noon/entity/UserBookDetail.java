@@ -8,7 +8,8 @@ public class UserBookDetail {
 	private User user;
 	private Book book;
 	private Date date;
-	private Date returnDate;
+	private Date tentativeReturnDate;
+	private Date actualReturnDate;
 	private boolean returned = false;
 
 	public Integer getId() {
@@ -43,14 +44,6 @@ public class UserBookDetail {
 		this.date = date;
 	}
 
-	public Date getReturnDate() {
-		return returnDate;
-	}
-
-	public void setReturnDate(Date returnDate) {
-		this.returnDate = returnDate;
-	}
-
 	public boolean isReturned() {
 		return returned;
 	}
@@ -58,8 +51,22 @@ public class UserBookDetail {
 	public void setReturned(boolean returned) {
 		this.returned = returned;
 	}
-	
-	
+
+	public Date getTentativeReturnDate() {
+		return tentativeReturnDate;
+	}
+
+	public Date getActualReturnDate() {
+		return actualReturnDate;
+	}
+
+	public void setTentativeReturnDate(Date tentativeReturnDate) {
+		this.tentativeReturnDate = tentativeReturnDate;
+	}
+
+	public void setActualReturnDate(Date actualReturnDate) {
+		this.actualReturnDate = actualReturnDate;
+	}
 
 	@Override
 	public int hashCode() {
@@ -100,8 +107,11 @@ public class UserBookDetail {
 
 	@Override
 	public String toString() {
-		return "UserBookDetail [id=" + id + ", user=" + user + ", book=" + book + ", date=" + date + ", returnDate="
-				+ returnDate + ", returned=" + returned + "]";
+		return "UserBookDetail [id=" + id + ", user=" + user + ", book=" + book + ", date=" + date
+				+ ", tentativeReturnDate=" + tentativeReturnDate + ", actualReturnDate=" + actualReturnDate
+				+ ", returned=" + returned + "]";
 	}
+
+	
 
 }
