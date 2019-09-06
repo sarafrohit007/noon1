@@ -1,5 +1,6 @@
 package com.example.noon.dao;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -17,12 +18,12 @@ import com.example.noon.entity.UserIdGenerator;
 @Repository("noonServiceDaoImpl")
 public class NoonServiceDaoImpl implements INoonServiceDao {
 
-	public static LinkedList<com.example.noon.entity.Book> bookList = new LinkedList<com.example.noon.entity.Book>();
-	public static LinkedHashMap<com.example.noon.entity.Book, Integer> bookCountMap = new LinkedHashMap<com.example.noon.entity.Book, Integer>();
-	public static LinkedList<com.example.noon.entity.User> userList = new LinkedList<com.example.noon.entity.User>();
-	public static LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.Book>> userBookMap = new LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.Book>>();
-	public static LinkedHashMap<com.example.noon.entity.Book, Integer> bookDistributedCountMap = new LinkedHashMap<com.example.noon.entity.Book, Integer>();
-	public static LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.FineDetailInfo>> userFineDetails = new LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.FineDetailInfo>>();
+	public static LinkedList<com.example.noon.entity.Book> bookList = new LinkedList<com.example.noon.entity.Book>(); // Total number of books in the system
+	public static LinkedHashMap<com.example.noon.entity.Book, Integer> bookCountMap = new LinkedHashMap<com.example.noon.entity.Book, Integer>(); //count of each different type book. suppose a book- with 3 count, b-book with 5 count. 
+	public static LinkedList<com.example.noon.entity.User> userList = new LinkedList<com.example.noon.entity.User>(); // total number of users
+	public static LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.Book>> userBookMap = new LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.Book>>(); // map of books issued to customer
+	public static LinkedHashMap<com.example.noon.entity.Book, Integer> bookDistributedCountMap = new LinkedHashMap<com.example.noon.entity.Book, Integer>(); // boos distributed count map. suppose a - book whose 2 copies are distributed
+	public static LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.FineDetailInfo>> userFineDetails = new LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.FineDetailInfo>>(); // fine datil map of user.
 	
 	public static final Integer maxFineLimitToBlockUser = 100;
 
@@ -132,26 +133,40 @@ public class NoonServiceDaoImpl implements INoonServiceDao {
 			return; // check for maximum fine limit
 		}
 		
-		int totalNumberOfCopiesOfThisBook = bookCountMap.get(entityBook);
+		Integer totalNumberOfCopiesOfThisBook = bookCountMap.get(entityBook);
 		
-		int totalCpiesOfThisBookDistributed = bookDistributedCountMap.get(entityBook);
+		Integer totalCpiesOfThisBookDistributed = bookDistributedCountMap.get(entityBook);
 		
-		if(totalCpiesOfThisBookDistributed>=totalNumberOfCopiesOfThisBook) {
-			return ; //  distributed copies of this book are more than the total number of books. 
+		if (totalNumberOfCopiesOfThisBook != null && totalCpiesOfThisBookDistributed != null
+				&& totalCpiesOfThisBookDistributed >= totalNumberOfCopiesOfThisBook) {
+			return; // distributed copies of this book are more than the total number of books.
 		}
 		
 		// if all the test cases passed// then 
 		if(bookList == null) {
 			bookList = new LinkedList<com.example.noon.entity.Book>();
 		}
+		entityBook.setAlreadyBooked(true);
+		Calendar cal = Calendar.getInstance();
+		Date issueDate = cal.getTime();
+		cal.add(Calendar.DAY_OF_YEAR, 7);
+		Date returnDate = cal.getTime();
+		entityBook.setIssueDate(issueDate);
+		entityBook.setReturnDate(returnDate);
 		bookList.add(entityBook);
-		
-//		LinkedList<com.example.noon.entity.Book> bookListToAssign = new LinkedList<com.example.noon.entity.Book>();
-//		bookListToAssign.add(entityBook);
-		
-		
-		
+		userBookMap.put(user,bookList); // putting books list booked by user  
 
+		if (totalNumberOfCopiesOfThisBook == null) {
+			bookCountMap.put(entityBook, 1);
+		} else {
+			bookCountMap.put(entityBook, bookCountMap.get(entityBook) + 1);
+		}
+
+		if (totalCpiesOfThisBookDistributed == null) {
+			bookDistributedCountMap.put(entityBook, 1);
+		} else {
+			bookDistributedCountMap.put(entityBook, bookDistributedCountMap.get(entityBook) + 1);
+		}
 	}
 
 }

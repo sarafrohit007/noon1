@@ -1,5 +1,7 @@
 package com.example.noon.entity;
 
+import java.util.Date;
+
 public class Book{
 
 	private Integer id;
@@ -7,6 +9,8 @@ public class Book{
 	private String authorName;
 	private String publisher;
 	private boolean alreadyBooked = false;
+	private Date issueDate;
+	private Date returnDate;
 
 	public Integer getId() {
 		return id;
@@ -48,10 +52,26 @@ public class Book{
 		this.alreadyBooked = alreadyBooked;
 	}
 
+	public Date getIssueDate() {
+		return issueDate;
+	}
+
+	public void setIssueDate(Date issueDate) {
+		this.issueDate = issueDate;
+	}
+
+	public Date getReturnDate() {
+		return returnDate;
+	}
+
+	public void setReturnDate(Date returnDate) {
+		this.returnDate = returnDate;
+	}
+
 	@Override
 	public String toString() {
 		return "Book [id=" + id + ", bookName=" + bookName + ", authorName=" + authorName + ", publisher=" + publisher
-				+ ", alreadyBooked=" + alreadyBooked + "]";
+				+ ", alreadyBooked=" + alreadyBooked + ", issueDate=" + issueDate + ", returnDate=" + returnDate + "]";
 	}
 
 	@Override
