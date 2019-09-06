@@ -13,6 +13,7 @@ import com.example.noon.dto.BookBorrowInfoDTO;
 import com.example.noon.dto.User;
 import com.example.noon.entity.BookIdGenerator;
 import com.example.noon.entity.FineDetailInfo;
+import com.example.noon.entity.UserBookDetail;
 import com.example.noon.entity.UserIdGenerator;
 
 @Repository("noonServiceDaoImpl")
@@ -21,7 +22,7 @@ public class NoonServiceDaoImpl implements INoonServiceDao {
 	public static LinkedList<com.example.noon.entity.Book> bookList = new LinkedList<com.example.noon.entity.Book>(); // Total number of books in the system
 	public static LinkedHashMap<com.example.noon.entity.Book, Integer> bookCountMap = new LinkedHashMap<com.example.noon.entity.Book, Integer>(); //count of each different type book. suppose a book- with 3 count, b-book with 5 count. 
 	public static LinkedList<com.example.noon.entity.User> userList = new LinkedList<com.example.noon.entity.User>(); // total number of users
-	public static LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.Book>> userBookMap = new LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.Book>>(); // map of books issued to customer
+	public static LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.UserBookDetail>> userBookMap = new LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.UserBookDetail>>(); // map of books issued to customer
 	public static LinkedHashMap<com.example.noon.entity.Book, Integer> bookDistributedCountMap = new LinkedHashMap<com.example.noon.entity.Book, Integer>(); // boos distributed count map. suppose a - book whose 2 copies are distributed
 	public static LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.FineDetailInfo>> userFineDetails = new LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.FineDetailInfo>>(); // fine datil map of user.
 	
@@ -104,10 +105,10 @@ public class NoonServiceDaoImpl implements INoonServiceDao {
 		}
 
 		int alreadyOrderedCount = 0;
-		LinkedList<com.example.noon.entity.Book> bookList = userBookMap.get(user);
-		if (bookList != null && bookList.size() > 0) {
-			for (com.example.noon.entity.Book book : bookList) {
-				if (book.isAlreadyBooked()) {
+		LinkedList<com.example.noon.entity.UserBookDetail> userBookDetails = userBookMap.get(user);
+		if (userBookDetails != null && userBookDetails.size() > 0) {
+			for (com.example.noon.entity.UserBookDetail userBookDetail : userBookDetails) {
+				if (!userBookDetail.isReturned()) {
 					alreadyOrderedCount++;
 					break; // Check for single/maximum book order
 				}
@@ -143,16 +144,20 @@ public class NoonServiceDaoImpl implements INoonServiceDao {
 		}
 		
 		// if all the test cases passed// then 
-		if(bookList == null) {
-			bookList = new LinkedList<com.example.noon.entity.Book>();
+		if(userBookDetails == null) {
+			userBookDetails = new LinkedList<com.example.noon.entity.UserBookDetail>();
 		}
-		entityBook.setAlreadyBooked(true);
+		
 		Calendar cal = Calendar.getInstance();
 		Date issueDate = cal.getTime();
 		cal.add(Calendar.DAY_OF_YEAR, 7);
 		Date returnDate = cal.getTime();
-		bookList.add(entityBook);
-		userBookMap.put(user,bookList); // putting books list booked by user  
+		UserBookDetail userBookDetail = new UserBookDetail();
+		userBookDetail.setUser(user);
+		userBookDetail.setBook(entityBook);
+		userBookDetail.setDate(issueDate);
+		//userBookDetails.add(entityBook);
+		//userBookMap.put(user,bookList); // putting books list booked by user  
 
 		if (totalNumberOfCopiesOfThisBook == null) {
 			bookCountMap.put(entityBook, 1);

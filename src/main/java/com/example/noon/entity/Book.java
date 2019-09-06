@@ -1,14 +1,12 @@
 package com.example.noon.entity;
 
-import java.util.Date;
-
 public class Book{
 
 	private Integer id;
 	private String bookName;
 	private String authorName;
 	private String publisher;
-	private boolean alreadyBooked = false;
+	private boolean available = true;
 
 	public Integer getId() {
 		return id;
@@ -42,18 +40,18 @@ public class Book{
 		this.publisher = publisher;
 	}
 
-	public boolean isAlreadyBooked() {
-		return alreadyBooked;
+	public boolean isAvailable() {
+		return available;
 	}
 
-	public void setAlreadyBooked(boolean alreadyBooked) {
-		this.alreadyBooked = alreadyBooked;
+	public void setAvailable(boolean available) {
+		this.available = available;
 	}
 
 	@Override
 	public String toString() {
 		return "Book [id=" + id + ", bookName=" + bookName + ", authorName=" + authorName + ", publisher=" + publisher
-				+ ", alreadyBooked=" + alreadyBooked + "]";
+				+ ", available=" + available + "]";
 	}
 
 	@Override
