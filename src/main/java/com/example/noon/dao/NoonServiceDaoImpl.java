@@ -11,6 +11,7 @@ import com.example.noon.dto.Book;
 import com.example.noon.dto.BookBorrowInfoDTO;
 import com.example.noon.dto.User;
 import com.example.noon.entity.BookIdGenerator;
+import com.example.noon.entity.FineDetailInfo;
 import com.example.noon.entity.UserIdGenerator;
 
 @Repository("noonServiceDaoImpl")
@@ -21,6 +22,9 @@ public class NoonServiceDaoImpl implements INoonServiceDao {
 	public static LinkedList<com.example.noon.entity.User> userList = new LinkedList<com.example.noon.entity.User>();
 	public static LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.Book>> userBookMap = new LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.Book>>();
 	public static LinkedHashMap<com.example.noon.entity.Book, Integer> bookDistributedCountMap = new LinkedHashMap<com.example.noon.entity.Book, Integer>();
+	public static LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.FineDetailInfo>> userFineDetails = new LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.FineDetailInfo>>();
+	
+	public static final Integer maxFineLimitToBlockUser = 100;
 
 	@Override
 	public void addBook(Book book) {
@@ -101,17 +105,49 @@ public class NoonServiceDaoImpl implements INoonServiceDao {
 		int alreadyOrderedCount = 0;
 		LinkedList<com.example.noon.entity.Book> bookList = userBookMap.get(user);
 		if (bookList != null && bookList.size() > 0) {
-			for(com.example.noon.entity.Book book : bookList) {
-				if(book.isAlreadyBooked()) {
+			for (com.example.noon.entity.Book book : bookList) {
+				if (book.isAlreadyBooked()) {
 					alreadyOrderedCount++;
 					break; // Check for single/maximum book order
 				}
 			}
 		}
-		
-		if(alreadyOrderedCount>0) {
+
+		if (alreadyOrderedCount > 0) {
 			return; // customer has already booked more than 1 book.
 		}
+		
+		double fineOnAsingleUser = 0;
+		LinkedList<com.example.noon.entity.FineDetailInfo> fineDetailsList = userFineDetails.get(user);
+		
+		if (fineDetailsList != null && fineDetailsList.size() > 0) {
+			for(FineDetailInfo fineDetail :  fineDetailsList) {
+				if (!fineDetail.isPaid()) {
+					fineOnAsingleUser+=fineDetail.getAmount();
+				}
+			}
+		}
+		
+		if (fineOnAsingleUser > maxFineLimitToBlockUser) {
+			return; // check for maximum fine limit
+		}
+		
+		int totalNumberOfCopiesOfThisBook = bookCountMap.get(entityBook);
+		
+		int totalCpiesOfThisBookDistributed = bookDistributedCountMap.get(entityBook);
+		
+		if(totalCpiesOfThisBookDistributed>=totalNumberOfCopiesOfThisBook) {
+			return ; //  distributed copies of this book are more than the total number of books. 
+		}
+		
+		// if all the test cases passed// then 
+		if(bookList == null) {
+			bookList = new LinkedList<com.example.noon.entity.Book>();
+		}
+		bookList.add(entityBook);
+		
+//		LinkedList<com.example.noon.entity.Book> bookListToAssign = new LinkedList<com.example.noon.entity.Book>();
+//		bookListToAssign.add(entityBook);
 		
 		
 		
