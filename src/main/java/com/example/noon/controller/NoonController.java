@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.noon.dto.Book;
+import com.example.noon.dto.BookBorrowInfoDTO;
 import com.example.noon.dto.User;
 import com.example.noon.services.INoonService;
 import com.sun.research.ws.wadl.Method;
@@ -51,9 +52,9 @@ public class NoonController {
 	@RequestMapping("/assignBook")
 	@ResponseBody
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String assignBook() {
+	public String assignBook(@RequestBody BookBorrowInfoDTO bookBorrowInfo) {
 		System.out.println("Inside assigning book to the user.... function");
-		noonService.assignBook();
+		noonService.assignBook(bookBorrowInfo);
 		return null;
 	}
 	

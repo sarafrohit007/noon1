@@ -1,6 +1,7 @@
 package com.example.noon.dao;
 
 import com.example.noon.dto.Book;
+import com.example.noon.dto.BookBorrowInfoDTO;
 import com.example.noon.dto.User;
 
 public interface INoonServiceDao {
@@ -9,6 +10,6 @@ public interface INoonServiceDao {
 
 	void addUser(User user);
 
-	void assignBook();
+	void assignBook(BookBorrowInfoDTO bookBorrowInfo);
 
 }

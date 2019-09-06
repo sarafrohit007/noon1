@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.noon.dao.INoonServiceDao;
 import com.example.noon.dto.Book;
+import com.example.noon.dto.BookBorrowInfoDTO;
 import com.example.noon.dto.User;
 
 @Service("noonServiceImpl")
@@ -28,8 +29,8 @@ public class NoonServiceImpl implements INoonService {
 	}
 
 	@Override
-	public void assignBook() {
-		noonServiceDao.assignBook();
+	public void assignBook(BookBorrowInfoDTO bookBorrowInfo) {
+		noonServiceDao.assignBook(bookBorrowInfo);
 		
 	}
 

@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import org.springframework.stereotype.Repository;
 
 import com.example.noon.dto.Book;
+import com.example.noon.dto.BookBorrowInfoDTO;
 import com.example.noon.dto.User;
 import com.example.noon.entity.BookIdGenerator;
 import com.example.noon.entity.UserIdGenerator;
@@ -16,10 +17,10 @@ import com.example.noon.entity.UserIdGenerator;
 public class NoonServiceDaoImpl implements INoonServiceDao {
 
 	public static LinkedList<com.example.noon.entity.Book> bookList = new LinkedList<com.example.noon.entity.Book>();
-	public static LinkedHashMap<com.example.noon.entity.Book, Integer> bookInfoMap = new LinkedHashMap<com.example.noon.entity.Book, Integer>();
+	public static LinkedHashMap<com.example.noon.entity.Book, Integer> bookCountMap = new LinkedHashMap<com.example.noon.entity.Book, Integer>();
 	public static LinkedList<com.example.noon.entity.User> userList = new LinkedList<com.example.noon.entity.User>();
 	public static LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.Book>> userBookMap = new LinkedHashMap<com.example.noon.entity.User, LinkedList<com.example.noon.entity.Book>>();
-	public static LinkedHashMap<com.example.noon.entity.Book, Integer> bookDistributedMap = new LinkedHashMap<com.example.noon.entity.Book, Integer>();
+	public static LinkedHashMap<com.example.noon.entity.Book, Integer> bookDistributedCountMap = new LinkedHashMap<com.example.noon.entity.Book, Integer>();
 
 	@Override
 	public void addBook(Book book) {
@@ -32,10 +33,10 @@ public class NoonServiceDaoImpl implements INoonServiceDao {
 			int maxId = bookList.get(bookList.size() - 1).getId();
 			entityBook.setId(maxId + 1);
 			bookList.add(entityBook);
-			if (bookInfoMap.containsKey(entityBook)) {
-				bookInfoMap.put(entityBook, bookInfoMap.get(entityBook) + 1);
+			if (bookCountMap.containsKey(entityBook)) {
+				bookCountMap.put(entityBook, bookCountMap.get(entityBook) + 1);
 			} else {
-				bookInfoMap.put(entityBook, 1);
+				bookCountMap.put(entityBook, 1);
 			}
 		} else {
 			entityBook.setBookName(book.getBookName());
@@ -43,7 +44,7 @@ public class NoonServiceDaoImpl implements INoonServiceDao {
 			entityBook.setPublisher(book.getPublisher());
 			entityBook.setId(1);
 			bookList.add(entityBook);
-			bookInfoMap.put(entityBook, 1);
+			bookCountMap.put(entityBook, 1);
 
 		}
 
@@ -74,10 +75,32 @@ public class NoonServiceDaoImpl implements INoonServiceDao {
 	}
 
 	@Override
-	public void assignBook() {
+	public void assignBook(BookBorrowInfoDTO bookBorrowInfo) {
+		com.example.noon.entity.Book entityBook = new com.example.noon.entity.Book();
+		entityBook.setAuthorName(bookBorrowInfo.getAuthorName());
+		entityBook.setBookName(bookBorrowInfo.getBookName());
+		entityBook.setPublisher(bookBorrowInfo.getPublisher());
+		if (!bookList.contains(entityBook)) {
+			return; // checking for if book already in the system or not....
+		} else {
+			int totalBookCount = bookCountMap.get(entityBook);
+			int distributeBookCount = bookCountMap.get(entityBook);
+			if (distributeBookCount >= totalBookCount) {
+				return; // checking for max.. quantity of this book distributed to toal quantity of this
+						// book.
+			}
+		}
+		com.example.noon.entity.User user = new com.example.noon.entity.User();
 
+		user.setLoginName(bookBorrowInfo.getLoginName());
+
+		if (!userList.contains(user)) {
+			return; // checking for user not available in the system
+		}
+
+		LinkedList<com.example.noon.entity.Book> bookList = userBookMap.get(user);
 		
-		
+
 	}
 
 }
